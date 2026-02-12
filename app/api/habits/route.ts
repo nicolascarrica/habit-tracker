@@ -27,6 +27,9 @@ export async function POST(req: Request) {
 
 export async function GET() {
   const habits = await prisma.habit.findMany({
+    include: {
+      completions: true,
+    },
     orderBy: {
       createdAt: "desc",
     },

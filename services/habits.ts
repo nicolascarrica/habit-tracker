@@ -13,7 +13,7 @@ export async function createHabit(name: string, emoji: string) {
     body: JSON.stringify({
       name,
       emoji,
-      userId: "nico",
+      userId: "Nico",
     }),
   });
 

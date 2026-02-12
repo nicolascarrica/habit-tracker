@@ -99,6 +99,18 @@ export default function Home() {
               >
                 ✕
               </button>
+
+              <button
+  onClick={async () => {
+    await fetch(`/api/habits/${habit.id}/complete`, {
+      method: "POST",
+    });
+    loadHabits();
+  }}
+  className="bg-green-500 px-3 py-1 rounded-lg text-sm"
+>
+  ✔
+</button>
             </div>
           ))}
         </div>
