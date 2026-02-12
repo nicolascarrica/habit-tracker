@@ -34,3 +34,17 @@ export async function GET() {
 
   return NextResponse.json(habits);
 }
+
+export async function DELETE(req: Request) {
+  const { id } = await req.json();
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
+
+  await prisma.habit.delete({
+    where: { id },
+  });
+
+  return NextResponse.json({ success: true });
+}

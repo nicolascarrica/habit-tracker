@@ -1,5 +1,6 @@
 "use client";
 
+import { createHabit, deleteHabit, fetchHabits } from "@/services/habits";
 import { useEffect, useState } from "react";
 
 type Habit = {
@@ -15,36 +16,24 @@ export default function Home() {
   const [name, setName] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState("💪");
 
-  async function fetchHabits() {
-    const res = await fetch("/api/habits");
-    const data = await res.json();
+  useEffect(() => {
+    loadHabits();
+  }, []);
+
+  async function loadHabits() {
+    const data = await fetchHabits();
     setHabits(data);
   }
 
-  useEffect(() => {
-    fetchHabits();
-  }, []);
-
-  async function createHabit(e: React.FormEvent) {
+  async function handleCreateHabit(e: React.FormEvent) {
     e.preventDefault();
-
     if (!name) return;
 
-    await fetch("/api/habits", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        emoji: selectedEmoji,
-        userId: "nico",
-      }),
-    });
-
+    await createHabit(name, selectedEmoji);
     setName("");
-    fetchHabits();
+    loadHabits();
   }
+
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white flex items-center justify-center p-6">
@@ -54,7 +43,7 @@ export default function Home() {
         </h1>
 
         {/* FORM */}
-        <form onSubmit={createHabit} className="space-y-5 mb-10">
+        <form onSubmit={handleCreateHabit} className="space-y-5 mb-10">
           <input
             type="text"
             placeholder="What habit do you want to build?"
@@ -94,10 +83,22 @@ export default function Home() {
           {habits.map((habit) => (
             <div
               key={habit.id}
-              className="bg-zinc-800 p-4 rounded-lg flex items-center gap-4"
+              className="bg-zinc-800 p-4 rounded-lg flex items-center justify-between"
             >
-              <span className="text-2xl">{habit.emoji}</span>
-              <span className="text-lg">{habit.name}</span>
+              <div className="flex items-center gap-4">
+                <span className="text-2xl">{habit.emoji}</span>
+                <span className="text-lg">{habit.name}</span>
+              </div>
+          
+              <button
+                onClick={async () => {
+                  await deleteHabit(habit.id);
+                  loadHabits();
+                }}
+                className="text-red-400 hover:text-red-300 transition"
+              >
+                ✕
+              </button>
             </div>
           ))}
         </div>
