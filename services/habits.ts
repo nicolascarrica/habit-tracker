@@ -33,3 +33,15 @@ export async function deleteHabit(id: string) {
   if (!res.ok) throw new Error("Failed to delete habit");
   return res.json();
 }
+
+export async function toggleHabitCompletion(habitId: string) {
+  const res = await fetch(`/api/habits/${habitId}/complete`, {
+    method: "POST",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to toggle completion");
+  }
+
+  return res.json();
+}
